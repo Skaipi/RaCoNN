@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rknnc"
+version = "0.0.1"
+description = "Reciprocal nearest-neighbor clustering with hierarchical map-equation optimization"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Mateusz Skarupski (Skaipi)" }]
+dependencies = ["numpy>=1.22"]
+
+[tool.setuptools]
+package-dir = { "rknnc" = "bindings" }
+packages = ["rknnc"]
+
+[tool.setuptools.package-data]
+rknnc = ["artifacts/native/**/*"]
+
+[tool.setuptools.exclude-package-data]
+rknnc = ["*.pdb", "*.xml", "*.dbg"]

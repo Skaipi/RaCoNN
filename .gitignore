@@ -1,0 +1,29 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Build artifacts
+artifacts/
+dist/
+*.egg-info
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Python bindings
+__pycache__/
+.coverage
+
+benchmarks/

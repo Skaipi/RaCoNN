@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="bindings/NativeRKNNC/NativeRKNNC.csproj" />
+  <Project Path="MapMinimizer/MapMinimizer.csproj" />
+  <Project Path="MapMinimizer.Tests/MapMinimizer.Tests.csproj" />
+  <Project Path="RKNNC/RKNNC.csproj" />
+</Solution>
