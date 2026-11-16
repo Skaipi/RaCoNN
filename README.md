@@ -1,6 +1,6 @@
 # RaCoNN
 
-RKNNC Rank-Consistent Nearest Neighbors (RaCoNN) builds a ranked nearest-neighbor graph and minimizes the hierarchical map equation to produce cluster labels.
+Rank-Consistent Nearest Neighbors (RaCoNN) builds a ranked nearest-neighbor graph and minimizes the hierarchical map equation to produce cluster labels.
 
 ## Python
 
