@@ -70,6 +70,35 @@ public class RknncIntegrationTests
         CollectionAssert.AreEqual(new[] { 0 }, rknnc.GetClusterAssignments());
     }
 
+    [TestMethod]
+    public void RankTaperMatchesEdgeSurvivalAcrossStricterGraphs()
+    {
+        double[][] data = [[0.0], [0.7], [2.1], [5.3], [9.7]];
+        const int k = 3, t = 2;
+        var unit = GetGraph(new RKNNC.RKNNC(data, k, t)).Edges.ToArray();
+        var tapered = GetGraph(new RKNNC.RKNNC(data, k, RKNNC.EdgeWeighting.RankTaper, t)).Edges.ToArray();
+        var occurrences = new Dictionary<(int, int), int>();
+
+        for (int size = 1; size <= k; size++)
+            for (int tolerance = 0; tolerance <= t; tolerance++)
+                foreach (var edge in GetGraph(new RKNNC.RKNNC(data, size, tolerance)).Edges)
+                {
+                    var key = (edge.Source, edge.Target);
+                    occurrences[key] = occurrences.GetValueOrDefault(key) + 1;
+                }
+
+        CollectionAssert.AreEquivalent(
+            unit.Select(edge => (edge.Source, edge.Target)).ToArray(),
+            tapered.Select(edge => (edge.Source, edge.Target)).ToArray());
+        Assert.IsTrue(unit.All(edge => edge.Weight == 1.0));
+        Assert.IsTrue(tapered.Any(edge => edge.Weight < 1.0));
+        foreach (var edge in tapered)
+        {
+            double expected = occurrences[(edge.Source, edge.Target)] / (double)(k * (t + 1));
+            Assert.AreEqual(expected, edge.Weight, 1e-12);
+        }
+    }
+
     private static UndirectedGraph GetGraph(RKNNC.RKNNC rknnc)
     {
         FieldInfo? graphField = typeof(RKNNC.RKNNC).GetField("graph", BindingFlags.Instance | BindingFlags.NonPublic);

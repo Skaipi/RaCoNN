@@ -14,7 +14,7 @@ internal class GraphBuilder
         this.neighborSearch = neighborSearch;
     }
 
-    internal UndirectedGraph Build(int k, int t)
+    internal UndirectedGraph Build(int k, int t, EdgeWeighting weighting = EdgeWeighting.Unit)
     {
         int n = neighborSearch.Count;
         if (n == 0)
@@ -24,7 +24,7 @@ internal class GraphBuilder
         var edges = new List<WeightedEdge>(checked(n * neighborCount));
         var results = neighborSearch.FindNeighbors(neighborCount);
         var rankByNeighbor = BuildNeighborRanks(results);
-        ConnectRankedNeighbors(results, rankByNeighbor, t, edges);
+        ConnectRankedNeighbors(results, rankByNeighbor, neighborCount, t, weighting, edges);
 
         return new UndirectedGraph(n, edges.ToArray());
     }
@@ -46,7 +46,8 @@ internal class GraphBuilder
     }
 
     private static void ConnectRankedNeighbors(
-        int[][] results, Dictionary<int, int>[] rankByNeighbor, int t, List<WeightedEdge> edges)
+        int[][] results, Dictionary<int, int>[] rankByNeighbor, int k, int t,
+        EdgeWeighting weighting, List<WeightedEdge> edges)
     {
         int n = results.Length;
         for (int u = 0; u < n; u++)
@@ -65,7 +66,13 @@ internal class GraphBuilder
                     if (u < v)
                         continue;
 
-                    edges.Add(new WeightedEdge(u, v, 1.0));
+                    // Fraction of stricter (neighborhood size, rank tolerance) graphs
+                    // retaining this edge. Neighbor ranks j and rankVU are zero-based.
+                    double weight = weighting == EdgeWeighting.RankTaper
+                        ? (k - Math.Max(j, rankVU)) / (double)k
+                            * (((double)t + 1.0 - diff) / ((double)t + 1.0))
+                        : 1.0;
+                    edges.Add(new WeightedEdge(u, v, weight));
                 }
             }
         }

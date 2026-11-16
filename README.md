@@ -9,7 +9,7 @@ import numpy as np
 from rknnc import RKNNC
 
 data = np.random.default_rng(7).normal(size=(1000, 8))
-labels = RKNNC(k=20, threshold=2, min_pts=10).fit_predict(data)
+labels = RKNNC(k=20, threshold=2, min_pts=10, weighting="rank_taper").fit_predict(data)
 ```
 
 ## MapMinimizer
